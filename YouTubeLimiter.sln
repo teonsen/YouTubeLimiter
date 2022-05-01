@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubeLimiter", "YouTubeLimiter\YouTubeLimiter.csproj", "{1E46401E-04CF-4327-B378-48199170F375}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E46401E-04CF-4327-B378-48199170F375}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E46401E-04CF-4327-B378-48199170F375}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E46401E-04CF-4327-B378-48199170F375}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E46401E-04CF-4327-B378-48199170F375}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FBB8F6C6-A094-438A-9A67-4086364B66D0}
+	EndGlobalSection
+EndGlobal
