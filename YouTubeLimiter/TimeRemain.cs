@@ -12,7 +12,7 @@ namespace YouTubeLimiter
     {
         private const int MaxTime = 30; // Minute
         private System.Timers.Timer _oneMinuteTimer;
-        private readonly string _file = Environment.CurrentDirectory + "\\remain.txt";
+        private readonly string _file = Environment.CurrentDirectory + "\\DoNotOpen.txt";
         private int _timeRemains;
 
         public TimeRemain()
@@ -46,8 +46,13 @@ namespace YouTubeLimiter
 
         private (DateTime dt, int remains) Read()
         {
-            string[] buf = File.ReadAllText(_file).Split(',');
-            return (DateTime.Parse(buf[0]), Convert.ToInt32(buf[1]));
+            if (File.Exists(_file))
+            {
+                string[] buf = File.ReadAllText(_file).Split(',');
+                return (DateTime.Parse(buf[0]), Convert.ToInt32(buf[1]));
+            }
+            ResetRemainingTime(_timeRemains);
+            return Read();
         }
 
         private void ResetIfAnotherday()
@@ -107,7 +112,7 @@ namespace YouTubeLimiter
             {
                 if (_timeRemains == 0)
                 {
-                    Console.WriteLine($"{e.SignalTime:HH:mm:ss} Remaining time is 0. See you tomorrow!");
+                    Console.WriteLine($"{e.SignalTime:HH:mm:ss} You ran out of time. See you tomorrow!");
                 }
                 else
                 {
@@ -153,13 +158,13 @@ namespace YouTubeLimiter
                 return true;
             };
 
-            //if (User32.EnumDesktopWindows(IntPtr.Zero, filter, IntPtr.Zero))
-            //{
-            //    foreach (var item in collection)
-            //    {
-            //        Console.WriteLine($"{item.Title} {item.ProcessName}");
-            //    }
-            //}
+            if (User32.EnumDesktopWindows(IntPtr.Zero, filter, IntPtr.Zero))
+            {
+                //foreach (var item in collection)
+                //{
+                //    Console.WriteLine($"{item.Title} {item.ProcessName}");
+                //}
+            }
             return collection;
         }
 
