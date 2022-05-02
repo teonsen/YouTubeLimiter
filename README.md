@@ -7,16 +7,19 @@ No extentions are needed.
 ## Usege
 Run YouTubeLimiter.exe.
 
-If you open "YouTube" tab on your browser and if it is active, the counter will be decremented.
-If you open "YouTube" tab on your browser but the tab is not active, the counter will be kept.
+If you open "YouTube" tab on your browser and if it is active, the counter will be decremented every 1 minute.
+When the counter is 0, the browser will be closed.
 
-I don't want my 10-year-old kid to be found this useage other than run it.
-If you want to change the limit time or terminate it, please look at the code. The answer is there.
+If you open "YouTube" tab on your browser but the tab is not active, the counter will remains.
 
-## Why the tool needed?
-There are some Chrome extentions (such as 'Intention') to do the same thing, but my kid can escape them easily.
+I don't want my kid to be found this useage other than run it.
+It should be easy to terminate it for adults:)
+
+## Why the tool is needed?
+Because my children are adicted to YouTube.
+There are some Chrome extentions (such as 'Intention') to do the same thing, but my children can escape them easily.
 
 ## Limitation
-This tool is kind of a riddle between me and my kid. Not the tool for adults.
-I'm looking forward my kid to solve this restrection in someday.
+This tool is kind of a riddle between me and my child. Not the tool for adults.
+I'm looking forward my child to solve this restrection in someday.
 Then I'll make it more difficult to terminate :)
