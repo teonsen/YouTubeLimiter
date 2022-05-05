@@ -20,19 +20,14 @@ namespace YouTubeLimiter
         [DllImport("kernel32.dll", ExactSpelling = true)]
         private static extern IntPtr GetConsoleWindow();
 
-        internal static void DeleteMenu()
-        {
-            DeleteMenu(GetSystemMenu(GetConsoleWindow(), false), SC_CLOSE, MF_BYCOMMAND);
-        }
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        // https://www.pinvoke.net/default.aspx/user32.enumdesktopwindows
-        /// <summary>
-        /// filter function
-        /// </summary>
-        /// <param name="hWnd"></param>
-        /// <param name="lParam"></param>
-        /// <returns></returns>
-        internal delegate bool EnumDelegate(IntPtr hWnd, int lParam);
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private const int SW_RESTORE = 9;
 
         /// <summary>
         /// check if windows visible
@@ -54,7 +49,6 @@ namespace YouTubeLimiter
         ExactSpelling = false, CharSet = CharSet.Auto, SetLastError = true)]
         internal static extern int GetWindowText(IntPtr hWnd, StringBuilder lpWindowText, int nMaxCount);
 
-
         /// <summary>
         /// enumarator on all desktop windows
         /// </summary>
@@ -68,6 +62,27 @@ namespace YouTubeLimiter
 
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        // https://www.pinvoke.net/default.aspx/user32.enumdesktopwindows
+        /// <summary>
+        /// filter function
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="lParam"></param>
+        /// <returns></returns>
+        internal delegate bool EnumDelegate(IntPtr hWnd, int lParam);
+
+        internal static void ActivateTheWindow()
+        {
+            var hWnd = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
+            ShowWindow(hWnd, SW_RESTORE);
+            SetForegroundWindow(hWnd);
+        }
+
+        internal static void DeleteMenu()
+        {
+            DeleteMenu(GetSystemMenu(GetConsoleWindow(), false), SC_CLOSE, MF_BYCOMMAND);
+        }
     }
 
     public static class PSAPI

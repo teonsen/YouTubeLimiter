@@ -65,28 +65,43 @@ internal class Program
 
         while (true)
         {
-            string input = Console.ReadLine();
-            if (!string.IsNullOrEmpty(input))
+            string command = Console.ReadLine();
+            if (string.IsNullOrEmpty(command))
             {
-                Console.WriteLine("Enter password:");
-                string pw = ReadLineMasked();
-                if (!string.IsNullOrEmpty(pw) && pw.Equals("dadlovesyou"))
+                _timer.MainFunction(false, DateTime.Now);
+            }
+            else
+            {
+                switch (command)
                 {
-                    Console.WriteLine($"Accepted.\n");
-                    int minute;
-                    if (int.TryParse(input, out minute))
-                    {
-                        _timer.ResetRemainingTime(minute);
-                    }
-                    else if (input.Equals("quit"))
-                    {
-                        Environment.Exit(0);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"Wrong password.\n");
-                    _timer.ResetRemainingTime(0);
+                    case "all":
+                        _timer.PrintTitles(a => a.PID > 0);
+                        break;
+                    case "tabs":
+                        _timer.PrintTitles(a => a.IsBrowser);
+                        break;
+                    default:
+                        Console.WriteLine("Enter password:");
+                        string pw = ReadLineMasked();
+                        if (pw.Equals("dadlovesyou"))
+                        {
+                            Console.WriteLine($"Accepted.\n");
+                            int minute;
+                            if (int.TryParse(command, out minute))
+                            {
+                                _timer.ResetRemainingTime(minute);
+                            }
+                            else if (command.Equals("quit"))
+                            {
+                                Environment.Exit(0);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Wrong password.\n");
+                            _timer.ResetRemainingTime(0);
+                        }
+                        break;
                 }
             }
         }

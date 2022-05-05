@@ -39,10 +39,10 @@ namespace YouTubeLimiter
             _oneMinuteTimer.Enabled = true;
         }
 
-        internal int GetRemainingTime()
-        {
-            return _timeRemains;
-        }
+        //internal int GetRemainingTime()
+        //{
+        //    return _timeRemains;
+        //}
 
         private (DateTime dt, int remains) Read()
         {
@@ -76,6 +76,52 @@ namespace YouTubeLimiter
             ShowRemainingTime();
         }
 
+        internal void MainFunction(bool calledFromTimer, DateTime signalTime)
+        {
+            // If there is a YouTube tab, decrement the counter.
+            var youtubeTabs = GetWindows().FindAll(a => a.IsBrowser && a.Title.Contains("YouTube"));
+            if (youtubeTabs != null && youtubeTabs.Count > 0)
+            {
+                //Console.WriteLine($"Following YouTube tab(s) are found.");
+                //foreach (var t in youtubeTabs)
+                //{
+                //    Console.WriteLine($"\t'{t.Title}' ({t.ProcessName})");
+                //}
+                if (calledFromTimer)
+                {
+                    Decrement();
+                }
+                ShowRemainingTime();
+                if (_timeRemains == 3)
+                {
+                    User32.ActivateTheWindow();
+                }
+                else if (_timeRemains <= 0)
+                {
+                    foreach (var tab in youtubeTabs)
+                    {
+                        tab.Kill();
+                    }
+                }
+            }
+            else
+            {
+                if (_timeRemains == 0)
+                {
+                    Console.WriteLine($"{signalTime:HH:mm:ss} You ran out of time. See you tomorrow!");
+                }
+                else
+                {
+                    Console.WriteLine($"{signalTime:HH:mm:ss} No YouTube tabs are found. Remaining time is kept {_timeRemains} minutes.");
+                }
+            }
+        }
+
+        private void ActivateMe()
+        {
+
+        }
+
         private void Decrement()
         {
             if (_timeRemains > 0)
@@ -88,40 +134,10 @@ namespace YouTubeLimiter
         private void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
             ResetIfAnotherday();
-
-            // If there is a YouTube tab, decrement the counter.
-            var youtubeTabs = GetBrowserTabs("YouTube");
-            if (youtubeTabs != null && youtubeTabs.Count > 0)
-            {
-                //Console.WriteLine($"Following YouTube tab(s) are found.");
-                //foreach (var t in youtubeTabs)
-                //{
-                //    Console.WriteLine($"\t'{t.Title}' ({t.ProcessName})");
-                //}
-                Decrement();
-                ShowRemainingTime();
-                if (_timeRemains <= 0)
-                {
-                    foreach (var tab in youtubeTabs)
-                    {
-                        tab.Kill();
-                    }
-                }
-            }
-            else
-            {
-                if (_timeRemains == 0)
-                {
-                    Console.WriteLine($"{e.SignalTime:HH:mm:ss} You ran out of time. See you tomorrow!");
-                }
-                else
-                {
-                    Console.WriteLine($"{e.SignalTime:HH:mm:ss} No YouTube tabs are found. Remaining time is kept {_timeRemains} minutes.");
-                }
-            }
+            MainFunction(true, e.SignalTime);
         }
 
-        internal void ShowRemainingTime()
+        private void ShowRemainingTime()
         {
             if (_timeRemains <= 3)
             {
@@ -137,7 +153,7 @@ namespace YouTubeLimiter
             Console.ResetColor();
         }
 
-        private List<WindowInfo> GetBrowserTabs(string restrictionTitle)
+        private List<WindowInfo> GetWindows()
         {
             var collection = new List<WindowInfo>();
             User32.EnumDelegate filter = delegate (IntPtr hWnd, int lParam)
@@ -150,10 +166,7 @@ namespace YouTubeLimiter
                 {
                     var p = GetProcInfo(hWnd);
                     //Console.WriteLine($"\t\t{strTitle} {p.name}");
-                    if (strTitle.Contains(restrictionTitle) && (p.name == "chrome.exe" || p.name == "msedge.exe"))
-                    {
-                        collection.Add(new WindowInfo(strTitle, p.name, p.path, p.pid));
-                    }
+                    collection.Add(new WindowInfo(hWnd, strTitle, p.name, p.path, p.pid));
                 }
                 return true;
             };
@@ -187,6 +200,13 @@ namespace YouTubeLimiter
             return (exeName, exePath, pid);
         }
 
+        internal void PrintTitles(Predicate<WindowInfo> match)
+        {
+            foreach (var w in GetWindows().FindAll(match))
+            {
+                Console.WriteLine($"{w.Title} {w.ProcessName}");
+            }
+        }
     }
 
 }
